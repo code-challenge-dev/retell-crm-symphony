@@ -11,7 +11,7 @@ export function Layout({ children }: LayoutProps) {
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 to-gray-100">
         <AppSidebar />
-        <main className={`flex-1 overflow-auto ml-16 p-4`}>
+        <main className={`flex-1 overflow-auto transition-all duration-300 ease-in-out ml-16`}>
           {children}
         </main>
       </div>

@@ -205,4 +205,26 @@ export default function Calls() {
                     {new Date(call.start_timestamp).toLocaleString()}
                   </p>
                 </div>
-                
+                <div className="text-right">
+                  <p className={`text-sm ${
+                    call.call_status === 'ended' ? 'text-green-500' :
+                    call.call_status === 'ongoing' ? 'text-blue-500' :
+                    'text-gray-500'
+                  }`}>
+                    {call.call_status.toUpperCase()}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Duration: {call.end_timestamp ? 
+                      Math.round((call.end_timestamp - call.start_timestamp) / 1000) + 's' : 
+                      'Ongoing'
+                    }
+                  </p>
+                </div>
+              </div>
+            </Card>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}

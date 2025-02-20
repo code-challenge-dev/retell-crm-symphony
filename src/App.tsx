@@ -20,16 +20,18 @@ const App = () => (
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <TooltipProvider>
+        <Layout>
           <Routes>
-            <Route path="/" element={<Layout><Index /></Layout>} />
-            <Route path="/calls" element={<Layout><Calls /></Layout>} />
-            <Route path="/agents" element={<Layout><Agents /></Layout>} />
-            <Route path="/voices" element={<Layout><Voices /></Layout>} />
-            <Route path="/knowledge" element={<Layout><Knowledge /></Layout>} />
-            <Route path="/settings" element={<Layout><Settings /></Layout>} />
-            <Route path="*" element={<Layout><NotFound /></Layout>} />
+            <Route path="/" element={<Index />} />
+            <Route path="/calls" element={<Calls />} />
+            <Route path="/agents" element={<Agents />} />
+            <Route path="/voices" element={<Voices />} />
+            <Route path="/knowledge" element={<Knowledge />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
+        </Layout>
+        <TooltipProvider>
           <Toaster />
           <Sonner />
         </TooltipProvider>

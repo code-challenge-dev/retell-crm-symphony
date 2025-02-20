@@ -13,6 +13,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarTrigger,
+  useSidebar
 } from "@/components/ui/sidebar";
 
 const menuItems = [
@@ -22,6 +23,17 @@ const menuItems = [
   { title: "Calendar", icon: Calendar, path: "/calendar" },
   { title: "Settings", icon: Settings, path: "/settings" },
 ];
+
+const CollapsibleTrigger = () => {
+  const { state } = useSidebar();
+  const isCollapsed = state === "collapsed";
+  
+  return (
+    <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center">
+      {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+    </div>
+  );
+};
 
 export function AppSidebar() {
   return (
@@ -47,15 +59,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <button 
-        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
-      >
-        <SidebarTrigger>
-          {({ collapsed }) => (
-            collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />
-          )}
-        </SidebarTrigger>
-      </button>
+      <SidebarTrigger>
+        <CollapsibleTrigger />
+      </SidebarTrigger>
     </Sidebar>
   );
 }

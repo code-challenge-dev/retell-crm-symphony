@@ -12,7 +12,7 @@ export interface Voice {
 }
 
 export async function listVoices() {
-  const response = await fetch(`${RETELL_API_URL}/voices`, {
+  const response = await fetch(`${RETELL_API_URL}/list-voices`, {
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
     }
@@ -24,7 +24,7 @@ export async function listVoices() {
 }
 
 export async function getVoice(voiceId: string) {
-  const response = await fetch(`${RETELL_API_URL}/voices/${voiceId}`, {
+  const response = await fetch(`${RETELL_API_URL}/get-voice/${voiceId}`, {
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
     }

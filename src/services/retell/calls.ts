@@ -9,14 +9,18 @@ export interface CallConfig {
   retell_llm_dynamic_variables?: Record<string, any>;
 }
 
-export interface WebCallConfig {
-  agent_id: string;
-  metadata?: Record<string, any>;
-  retell_llm_dynamic_variables?: Record<string, any>;
+export interface BatchCallConfig {
+  from_number: string;
+  tasks: {
+    to_number: string;
+    retell_llm_dynamic_variables?: Record<string, any>;
+  }[];
+  name?: string;
+  trigger_timestamp?: number;
 }
 
 export async function createPhoneCall(config: CallConfig) {
-  const response = await fetch(`${RETELL_API_URL}/calls/phone`, {
+  const response = await fetch(`${RETELL_API_URL}/v2/create-phone-call`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
@@ -30,8 +34,8 @@ export async function createPhoneCall(config: CallConfig) {
   return response.json();
 }
 
-export async function createWebCall(config: WebCallConfig) {
-  const response = await fetch(`${RETELL_API_URL}/calls/web`, {
+export async function createBatchCall(config: BatchCallConfig) {
+  const response = await fetch(`${RETELL_API_URL}/create-batch-call`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
@@ -40,22 +44,7 @@ export async function createWebCall(config: WebCallConfig) {
     body: JSON.stringify(config),
   });
   if (!response.ok) {
-    throw new Error('Failed to create web call');
-  }
-  return response.json();
-}
-
-export async function updateCall(callId: string, metadata: Record<string, any>) {
-  const response = await fetch(`${RETELL_API_URL}/calls/${callId}`, {
-    method: 'PATCH',
-    headers: {
-      'Authorization': `Bearer ${RETELL_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ metadata }),
-  });
-  if (!response.ok) {
-    throw new Error('Failed to update call');
+    throw new Error('Failed to create batch call');
   }
   return response.json();
 }
@@ -66,7 +55,7 @@ export async function listCalls(filters?: {
   call_type?: ('web_call' | 'phone_call')[];
   direction?: ('inbound' | 'outbound')[];
 }) {
-  const response = await fetch(`${RETELL_API_URL}/calls`, {
+  const response = await fetch(`${RETELL_API_URL}/v2/list-calls`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,

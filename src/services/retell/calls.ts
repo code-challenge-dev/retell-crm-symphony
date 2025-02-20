@@ -65,9 +65,19 @@ export async function listCalls(filters?: {
   call_type?: ('web_call' | 'phone_call')[];
   direction?: ('inbound' | 'outbound')[];
 }) {
-  console.log('Fetching calls with filters:', filters);
-  const response = await fetch(`${RETELL_API_URL}/list-calls`, {
-    method: 'GET', // Changed to GET
+  const params = new URLSearchParams();
+  if (filters) {
+    Object.entries(filters).forEach(([key, value]) => {
+      if (Array.isArray(value)) {
+        value.forEach(v => params.append(key, v));
+      }
+    });
+  }
+  const queryString = params.toString();
+  const url = queryString ? `${RETELL_API_URL}/calls?${queryString}` : `${RETELL_API_URL}/calls`;
+  
+  const response = await fetch(url, {
+    method: 'GET',
     ...RetellConfig,
   });
   return handleResponse(response);

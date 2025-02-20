@@ -10,62 +10,54 @@ export interface AgentConfig {
   };
 }
 
+async function handleResponse(response: Response) {
+  if (!response.ok) {
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'API request failed');
+    } catch (e) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+  }
+  return response.json();
+}
+
 export async function createAgent(config: AgentConfig) {
-  const response = await fetch(`${RETELL_API_URL}/create-agent`, {
+  const response = await fetch(`${RETELL_API_URL}/agents`, {
     method: 'POST',
     ...RetellConfig,
     body: JSON.stringify(config),
   });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to create agent');
-  }
-  return response.json();
+  return handleResponse(response);
 }
 
 export async function getAgent(agentId: string) {
-  const response = await fetch(`${RETELL_API_URL}/get-agent/${agentId}`, {
+  const response = await fetch(`${RETELL_API_URL}/agents/${agentId}`, {
     ...RetellConfig,
   });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to fetch agent');
-  }
-  return response.json();
+  return handleResponse(response);
 }
 
 export async function listAgents() {
-  const response = await fetch(`${RETELL_API_URL}/list-agents`, {
+  const response = await fetch(`${RETELL_API_URL}/agents`, {
     ...RetellConfig,
   });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to fetch agents');
-  }
-  return response.json();
+  return handleResponse(response);
 }
 
 export async function updateAgent(agentId: string, config: Partial<AgentConfig>) {
-  const response = await fetch(`${RETELL_API_URL}/update-agent/${agentId}`, {
+  const response = await fetch(`${RETELL_API_URL}/agents/${agentId}`, {
     method: 'PATCH',
     ...RetellConfig,
     body: JSON.stringify(config),
   });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to update agent');
-  }
-  return response.json();
+  return handleResponse(response);
 }
 
 export async function deleteAgent(agentId: string) {
-  const response = await fetch(`${RETELL_API_URL}/delete-agent/${agentId}`, {
+  const response = await fetch(`${RETELL_API_URL}/agents/${agentId}`, {
     method: 'DELETE',
     ...RetellConfig,
   });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to delete agent');
-  }
-  return response.json();
+  return handleResponse(response);
 }

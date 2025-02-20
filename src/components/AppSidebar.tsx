@@ -1,7 +1,7 @@
 
 import { 
   Home, Users, Phone, Calendar, Settings, 
-  ChevronLeft, ChevronRight, Mic, Brain, Database 
+  ChevronLeft, ChevronRight, Mic, Brain
 } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -54,8 +54,10 @@ export function AppSidebar() {
                   <SidebarMenuButton asChild>
                     <Link 
                       to={item.path}
-                      className={`flex items-center gap-3 px-4 py-2 rounded-lg transition-colors
-                        ${location.pathname === item.path ? 'bg-gray-100 text-gray-900' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors hover:bg-gray-100/80
+                        ${location.pathname === item.path 
+                          ? 'bg-gray-100 text-gray-900 font-medium shadow-sm' 
+                          : 'text-gray-600 hover:text-gray-900'}`}
                     >
                       <item.icon className="w-5 h-5" />
                       <span>{item.title}</span>

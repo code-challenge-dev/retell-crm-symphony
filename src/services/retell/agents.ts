@@ -20,7 +20,7 @@ export interface AgentConfig {
 }
 
 export async function createAgent(config: AgentConfig) {
-  const response = await fetch(`${RETELL_API_URL}/create-agent`, {
+  const response = await fetch(`${RETELL_API_URL}/agents`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
@@ -28,29 +28,38 @@ export async function createAgent(config: AgentConfig) {
     },
     body: JSON.stringify(config),
   });
+  if (!response.ok) {
+    throw new Error('Failed to create agent');
+  }
   return response.json();
 }
 
 export async function getAgent(agentId: string) {
-  const response = await fetch(`${RETELL_API_URL}/get-agent/${agentId}`, {
+  const response = await fetch(`${RETELL_API_URL}/agents/${agentId}`, {
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
     }
   });
+  if (!response.ok) {
+    throw new Error('Failed to fetch agent');
+  }
   return response.json();
 }
 
 export async function listAgents() {
-  const response = await fetch(`${RETELL_API_URL}/list-agents`, {
+  const response = await fetch(`${RETELL_API_URL}/agents`, {
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
     }
   });
+  if (!response.ok) {
+    throw new Error('Failed to fetch agents');
+  }
   return response.json();
 }
 
 export async function updateAgent(agentId: string, config: Partial<AgentConfig>) {
-  const response = await fetch(`${RETELL_API_URL}/update-agent/${agentId}`, {
+  const response = await fetch(`${RETELL_API_URL}/agents/${agentId}`, {
     method: 'PATCH',
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
@@ -58,5 +67,8 @@ export async function updateAgent(agentId: string, config: Partial<AgentConfig>)
     },
     body: JSON.stringify(config),
   });
+  if (!response.ok) {
+    throw new Error('Failed to update agent');
+  }
   return response.json();
 }

@@ -1,42 +1,89 @@
 
+import { Phone, Users, Mic, Brain, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+
+const features = [
+  {
+    icon: Phone,
+    title: "Call Management",
+    description: "Make and receive calls with AI-powered agents",
+    color: "text-blue-500",
+    bgColor: "bg-blue-50",
+    link: "/calls"
+  },
+  {
+    icon: Users,
+    title: "AI Agents",
+    description: "Configure and manage your virtual agents",
+    color: "text-green-500",
+    bgColor: "bg-green-50",
+    link: "/agents"
+  },
+  {
+    icon: Brain,
+    title: "Knowledge Base",
+    description: "Train your agents with custom knowledge",
+    color: "text-purple-500",
+    bgColor: "bg-purple-50",
+    link: "/knowledge"
+  },
+  {
+    icon: Mic,
+    title: "Voice Settings",
+    description: "Customize agent voices and speech patterns",
+    color: "text-orange-500",
+    bgColor: "bg-orange-50",
+    link: "/voices"
+  }
+];
+
 export default function Index() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 to-purple-100">
-      <div className="animate-fade-in">
-        <div className="relative group hover-scale">
-          <svg 
-            viewBox="0 0 100 100" 
-            className="w-64 h-64 md:w-96 md:h-96"
-          >
-            <path
-              d="M50 10 C60 10 80 20 85 35 C90 50 85 65 75 75 C65 85 55 85 50 85 C45 85 35 85 25 75 C15 65 10 50 15 35 C20 20 40 10 50 10 Z"
-              fill="#FFE5F9"
-              stroke="#FF69B4"
-              strokeWidth="2"
-            />
-            <path
-              d="M85 35 C85 35 90 25 95 30"
-              fill="none"
-              stroke="#FF69B4"
-              strokeWidth="2"
-            />
-            <circle cx="35" cy="40" r="3" fill="#FF69B4" />
-            <path
-              d="M40 50 C45 55 55 55 60 50"
-              fill="none"
-              stroke="#FF69B4"
-              strokeWidth="2"
-            />
-            <path
-              d="M50 20 L60 10"
-              stroke="#FFB6C1"
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-          </svg>
-          <div className="absolute -top-8 left-1/2 transform -translate-x-1/2">
-            <div className="w-8 h-16 bg-gradient-to-t from-purple-400 to-pink-300 rotate-12 rounded-full animate-pulse" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="container mx-auto px-4 py-16">
+        {/* Hero Section */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text">
+            Welcome to Symphony CRM
+          </h1>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Your intelligent customer relationship management platform powered by Retell AI
+          </p>
+        </div>
+
+        {/* Features Grid */}
+        <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+          {features.map((feature) => (
+            <Link 
+              key={feature.title}
+              to={feature.link}
+              className="group p-6 rounded-2xl bg-white shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+            >
+              <div className={`${feature.bgColor} ${feature.color} w-12 h-12 rounded-lg flex items-center justify-center mb-4`}>
+                <feature.icon size={24} />
+              </div>
+              <h2 className="text-2xl font-semibold mb-2 group-hover:text-blue-600 transition-colors">
+                {feature.title}
+              </h2>
+              <p className="text-gray-600 mb-4">
+                {feature.description}
+              </p>
+              <div className="flex items-center text-blue-600 font-medium">
+                Learn more 
+                <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-2" />
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* API Info */}
+        <div className="mt-16 text-center">
+          <div className="inline-block px-4 py-2 bg-blue-50 text-blue-600 rounded-full font-medium mb-4">
+            Powered by Retell API
           </div>
+          <p className="text-gray-600">
+            Using API Key: key_bc69ed16c81fa347d618b4763cb7
+          </p>
         </div>
       </div>
     </div>

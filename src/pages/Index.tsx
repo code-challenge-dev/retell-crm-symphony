@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { listCalls } from '@/services/retell/calls';
 import { listAgents } from '@/services/retell/agents';
 import { Card } from "@/components/ui/card";
+import { RETELL_API_KEY } from '@/lib/retell';
 
 const features = [
   {
@@ -52,6 +53,9 @@ export default function Index() {
     queryKey: ['agents'],
     queryFn: () => listAgents(),
   });
+
+  // Mask API key for display
+  const maskedApiKey = RETELL_API_KEY.slice(0, 8) + '...' + RETELL_API_KEY.slice(-4);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
@@ -143,7 +147,7 @@ export default function Index() {
             Connected to Retell API
           </div>
           <p className="text-gray-600">
-            Using API Key: {RETELL_API_KEY}
+            Using API Key: {maskedApiKey}
           </p>
         </div>
       </div>

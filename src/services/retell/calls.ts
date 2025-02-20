@@ -1,5 +1,5 @@
 
-import { RETELL_API_KEY, RETELL_API_URL } from '@/lib/retell';
+import { RETELL_API_URL, RetellConfig } from '@/lib/retell';
 
 export interface CallConfig {
   from_number?: string;
@@ -20,46 +20,40 @@ export interface BatchCallConfig {
 }
 
 export async function createPhoneCall(config: CallConfig) {
-  const response = await fetch(`${RETELL_API_URL}/v2/create-phone-call`, {
+  const response = await fetch(`${RETELL_API_URL}/create-phone-call`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RETELL_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
+    ...RetellConfig,
     body: JSON.stringify(config),
   });
   if (!response.ok) {
-    throw new Error('Failed to create phone call');
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to create phone call');
   }
   return response.json();
 }
 
 export async function createWebCall(config: CallConfig) {
-  const response = await fetch(`${RETELL_API_URL}/v2/create-web-call`, {
+  const response = await fetch(`${RETELL_API_URL}/create-web-call`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RETELL_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
+    ...RetellConfig,
     body: JSON.stringify(config),
   });
   if (!response.ok) {
-    throw new Error('Failed to create web call');
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to create web call');
   }
   return response.json();
 }
 
 export async function createBatchCall(config: BatchCallConfig) {
-  const response = await fetch(`${RETELL_API_URL}/v2/create-batch-call`, {
+  const response = await fetch(`${RETELL_API_URL}/create-batch-call`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RETELL_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
+    ...RetellConfig,
     body: JSON.stringify(config),
   });
   if (!response.ok) {
-    throw new Error('Failed to create batch call');
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to create batch call');
   }
   return response.json();
 }
@@ -70,12 +64,9 @@ export async function listCalls(filters?: {
   call_type?: ('web_call' | 'phone_call')[];
   direction?: ('inbound' | 'outbound')[];
 }) {
-  const response = await fetch(`${RETELL_API_URL}/v2/list-calls`, {
+  const response = await fetch(`${RETELL_API_URL}/list-calls`, {
     method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${RETELL_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
+    ...RetellConfig,
     body: JSON.stringify({
       filter_criteria: filters,
       sort_order: 'descending',
@@ -83,7 +74,8 @@ export async function listCalls(filters?: {
     }),
   });
   if (!response.ok) {
-    throw new Error('Failed to fetch calls');
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to fetch calls');
   }
   return response.json();
 }

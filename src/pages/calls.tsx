@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { listCalls, createPhoneCall, createWebCall } from '@/services/retell/calls';
 import { listAgents } from '@/services/retell/agents';
 import {
@@ -18,20 +18,39 @@ import {
 
 export default function Calls() {
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [fromNumber, setFromNumber] = useState('');
   const [selectedAgentId, setSelectedAgentId] = useState('');
 
   // Fetch calls
-  const { data: calls, isLoading: isLoadingCalls } = useQuery({
+  const { data: calls = [], isLoading: isLoadingCalls, error: callsError } = useQuery({
     queryKey: ['calls'],
     queryFn: () => listCalls(),
+    retry: 3,
+    onError: (error: any) => {
+      console.error('Error fetching calls:', error);
+      toast({
+        title: "Error loading calls",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   });
 
   // Fetch agents
-  const { data: agents, isLoading: isLoadingAgents } = useQuery({
+  const { data: agents = [], isLoading: isLoadingAgents, error: agentsError } = useQuery({
     queryKey: ['agents'],
     queryFn: () => listAgents(),
+    retry: 3,
+    onError: (error: any) => {
+      console.error('Error fetching agents:', error);
+      toast({
+        title: "Error loading agents",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   });
 
   // Create call mutation
@@ -50,6 +69,7 @@ export default function Calls() {
       }
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['calls'] });
       toast({
         title: "Call created successfully",
         description: "Your call has been initiated",
@@ -59,6 +79,7 @@ export default function Calls() {
       setSelectedAgentId('');
     },
     onError: (error: any) => {
+      console.error('Error creating call:', error);
       toast({
         title: "Error creating call",
         description: error.message,
@@ -66,6 +87,15 @@ export default function Calls() {
       });
     },
   });
+
+  if (callsError || agentsError) {
+    return (
+      <div className="p-8 text-center">
+        <h2 className="text-xl font-semibold text-red-600 mb-4">Error Loading Data</h2>
+        <p className="text-gray-600">Please check your connection and try again</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-8">
@@ -121,7 +151,7 @@ export default function Calls() {
               <SelectTrigger className="w-[240px]">
                 <SelectValue placeholder="Select an agent" />
               </SelectTrigger>
-              <SelectContent position="popper">
+              <SelectContent>
                 {isLoadingAgents ? (
                   <SelectItem value="loading" disabled>
                     Loading agents...
@@ -162,7 +192,9 @@ export default function Calls() {
       <div className="grid gap-4">
         <h2 className="text-xl font-semibold mb-4">Recent Calls</h2>
         {isLoadingCalls ? (
-          <div>Loading calls...</div>
+          <div className="text-center py-8 text-gray-600">Loading calls...</div>
+        ) : calls?.length === 0 ? (
+          <div className="text-center py-8 text-gray-600">No calls found</div>
         ) : (
           calls?.map((call: any) => (
             <Card key={call.call_id} className="p-4">
@@ -173,26 +205,4 @@ export default function Calls() {
                     {new Date(call.start_timestamp).toLocaleString()}
                   </p>
                 </div>
-                <div className="text-right">
-                  <p className={`text-sm ${
-                    call.call_status === 'ended' ? 'text-green-500' :
-                    call.call_status === 'ongoing' ? 'text-blue-500' :
-                    'text-gray-500'
-                  }`}>
-                    {call.call_status.toUpperCase()}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Duration: {call.end_timestamp ? 
-                      Math.round((call.end_timestamp - call.start_timestamp) / 1000) + 's' : 
-                      'Ongoing'
-                    }
-                  </p>
-                </div>
-              </div>
-            </Card>
-          ))
-        )}
-      </div>
-    </div>
-  );
-}
+                

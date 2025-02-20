@@ -19,17 +19,26 @@ export interface BatchCallConfig {
   trigger_timestamp?: number;
 }
 
+async function handleResponse(response: Response) {
+  if (!response.ok) {
+    // Try to get error message from response
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'API request failed');
+    } catch (e) {
+      throw new Error(`API request failed with status ${response.status}`);
+    }
+  }
+  return response.json();
+}
+
 export async function createPhoneCall(config: CallConfig) {
   const response = await fetch(`${RETELL_API_URL}/create-phone-call`, {
     method: 'POST',
     ...RetellConfig,
     body: JSON.stringify(config),
   });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to create phone call');
-  }
-  return response.json();
+  return handleResponse(response);
 }
 
 export async function createWebCall(config: CallConfig) {
@@ -38,11 +47,7 @@ export async function createWebCall(config: CallConfig) {
     ...RetellConfig,
     body: JSON.stringify(config),
   });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to create web call');
-  }
-  return response.json();
+  return handleResponse(response);
 }
 
 export async function createBatchCall(config: BatchCallConfig) {
@@ -51,11 +56,7 @@ export async function createBatchCall(config: BatchCallConfig) {
     ...RetellConfig,
     body: JSON.stringify(config),
   });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to create batch call');
-  }
-  return response.json();
+  return handleResponse(response);
 }
 
 export async function listCalls(filters?: {
@@ -64,18 +65,10 @@ export async function listCalls(filters?: {
   call_type?: ('web_call' | 'phone_call')[];
   direction?: ('inbound' | 'outbound')[];
 }) {
+  console.log('Fetching calls with filters:', filters);
   const response = await fetch(`${RETELL_API_URL}/list-calls`, {
-    method: 'POST',
+    method: 'GET', // Changed to GET
     ...RetellConfig,
-    body: JSON.stringify({
-      filter_criteria: filters,
-      sort_order: 'descending',
-      limit: 50,
-    }),
   });
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'Failed to fetch calls');
-  }
-  return response.json();
+  return handleResponse(response);
 }

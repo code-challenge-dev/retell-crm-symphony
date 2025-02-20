@@ -11,7 +11,7 @@ export interface AgentConfig {
 }
 
 export async function createAgent(config: AgentConfig) {
-  const response = await fetch(`${RETELL_API_URL}/v2/create-agent`, {
+  const response = await fetch(`${RETELL_API_URL}/create-agent`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
@@ -26,7 +26,7 @@ export async function createAgent(config: AgentConfig) {
 }
 
 export async function getAgent(agentId: string) {
-  const response = await fetch(`${RETELL_API_URL}/v2/get-agent/${agentId}`, {
+  const response = await fetch(`${RETELL_API_URL}/get-agent/${agentId}`, {
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
     }
@@ -38,7 +38,7 @@ export async function getAgent(agentId: string) {
 }
 
 export async function listAgents() {
-  const response = await fetch(`${RETELL_API_URL}/v2/list-agents`, {
+  const response = await fetch(`${RETELL_API_URL}/list-agents`, {
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,
     }
@@ -50,7 +50,7 @@ export async function listAgents() {
 }
 
 export async function updateAgent(agentId: string, config: Partial<AgentConfig>) {
-  const response = await fetch(`${RETELL_API_URL}/v2/update-agent/${agentId}`, {
+  const response = await fetch(`${RETELL_API_URL}/update-agent/${agentId}`, {
     method: 'PATCH',
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,

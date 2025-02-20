@@ -23,15 +23,16 @@ export default function Agents() {
   const [selectedVoiceId, setSelectedVoiceId] = useState('');
 
   // Fetch existing agents
-  const { data: agents, isLoading: isLoadingAgents } = useQuery({
+  const { data: agents = [], isLoading: isLoadingAgents, error: agentsError } = useQuery({
     queryKey: ['agents'],
-    queryFn: () => listAgents()
+    queryFn: () => listAgents(),
+    retry: 3,
   });
 
   // Fetch available voices
-  const { data: voices, isLoading: isLoadingVoices } = useQuery({
+  const { data: voices = [], isLoading: isLoadingVoices } = useQuery({
     queryKey: ['voices'],
-    queryFn: () => listVoices()
+    queryFn: () => listVoices(),
   });
 
   // Create new agent
@@ -41,7 +42,7 @@ export default function Agents() {
       voice_id: selectedVoiceId,
       response_engine: {
         type: 'retell-llm',
-        llm_id: 'gpt-4', // Using default GPT-4 for this example
+        llm_id: 'gpt-4',
       }
     }),
     onSuccess: () => {
@@ -61,6 +62,16 @@ export default function Agents() {
       });
     },
   });
+
+  if (agentsError) {
+    return (
+      <div className="container mx-auto p-8">
+        <div className="text-center text-red-500">
+          Error loading agents: {agentsError.message}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto p-8">
@@ -84,7 +95,7 @@ export default function Agents() {
             <SelectTrigger className="w-[240px]">
               <SelectValue placeholder="Select a voice" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent position="popper" className="w-[240px]">
               {isLoadingVoices ? (
                 <SelectItem value="loading" disabled>
                   Loading voices...
@@ -100,7 +111,7 @@ export default function Agents() {
           </Select>
           <Button
             onClick={() => createAgentMutation.mutate()}
-            disabled={!agentName || !selectedVoiceId}
+            disabled={!agentName || !selectedVoiceId || createAgentMutation.isPending}
           >
             <Plus className="w-4 h-4 mr-2" />
             Create Agent
@@ -122,18 +133,18 @@ export default function Agents() {
           <TableBody>
             {isLoadingAgents ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center">
+                <TableCell colSpan={5} className="text-center py-8">
                   Loading agents...
                 </TableCell>
               </TableRow>
-            ) : agents?.length === 0 ? (
+            ) : agents.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={5} className="text-center text-gray-500">
+                <TableCell colSpan={5} className="text-center py-8 text-gray-500">
                   No agents found. Create your first agent above.
                 </TableCell>
               </TableRow>
             ) : (
-              agents?.map((agent: any) => (
+              agents.map((agent: any) => (
                 <TableRow key={agent.agent_id}>
                   <TableCell className="font-medium">{agent.agent_name}</TableCell>
                   <TableCell>{agent.response_engine?.type || 'Unknown'}</TableCell>

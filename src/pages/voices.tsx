@@ -29,7 +29,9 @@ export default function Voices() {
       // Stop audio
     } else {
       setPlayingVoiceId(voiceId);
-      // Play audio
+      // Play audio from previewUrl
+      const audio = new Audio(previewUrl);
+      audio.play();
     }
   };
 

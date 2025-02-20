@@ -47,11 +47,15 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarTrigger>
-        <button className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center">
-          {({ collapsed }) => collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-        </button>
-      </SidebarTrigger>
+      <button 
+        className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-6 h-6 rounded-full bg-white shadow-md flex items-center justify-center"
+      >
+        <SidebarTrigger>
+          {({ collapsed }) => (
+            collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />
+          )}
+        </SidebarTrigger>
+      </button>
     </Sidebar>
   );
 }

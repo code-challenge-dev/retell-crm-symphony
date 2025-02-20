@@ -21,16 +21,19 @@ export default function Calls() {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [selectedAgentId, setSelectedAgentId] = useState('');
 
+  // Fetch calls
   const { data: calls, isLoading: isLoadingCalls } = useQuery({
     queryKey: ['calls'],
     queryFn: () => listCalls(),
   });
 
+  // Fetch agents
   const { data: agents, isLoading: isLoadingAgents } = useQuery({
     queryKey: ['agents'],
     queryFn: () => listAgents(),
   });
 
+  // Create call mutation
   const createCallMutation = useMutation({
     mutationFn: (type: 'phone' | 'web') => {
       if (type === 'phone') {

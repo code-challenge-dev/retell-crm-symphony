@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Phone, Plus, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -28,13 +27,15 @@ export default function Calls() {
     queryKey: ['calls'],
     queryFn: () => listCalls(),
     retry: 3,
-    onError: (error: any) => {
-      console.error('Error fetching calls:', error);
-      toast({
-        title: "Error loading calls",
-        description: error.message,
-        variant: "destructive",
-      });
+    meta: {
+      errorHandler: (error: any) => {
+        console.error('Error fetching calls:', error);
+        toast({
+          title: "Error loading calls",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     }
   });
 
@@ -43,13 +44,15 @@ export default function Calls() {
     queryKey: ['agents'],
     queryFn: () => listAgents(),
     retry: 3,
-    onError: (error: any) => {
-      console.error('Error fetching agents:', error);
-      toast({
-        title: "Error loading agents",
-        description: error.message,
-        variant: "destructive",
-      });
+    meta: {
+      errorHandler: (error: any) => {
+        console.error('Error fetching agents:', error);
+        toast({
+          title: "Error loading agents",
+          description: error.message,
+          variant: "destructive",
+        });
+      }
     }
   });
 

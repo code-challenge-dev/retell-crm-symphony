@@ -1,21 +1,34 @@
 
 import { useState } from 'react';
-import { Phone, Plus } from "lucide-react";
+import { Phone, Plus, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { listCalls, createPhoneCall, createWebCall } from '@/services/retell/calls';
+import { listAgents } from '@/services/retell/agents';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function Calls() {
   const { toast } = useToast();
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [agentId, setAgentId] = useState('');
+  const [selectedAgentId, setSelectedAgentId] = useState('');
 
   const { data: calls, isLoading: isLoadingCalls } = useQuery({
     queryKey: ['calls'],
     queryFn: () => listCalls(),
+  });
+
+  const { data: agents, isLoading: isLoadingAgents } = useQuery({
+    queryKey: ['agents'],
+    queryFn: () => listAgents(),
   });
 
   const createCallMutation = useMutation({
@@ -23,11 +36,11 @@ export default function Calls() {
       if (type === 'phone') {
         return createPhoneCall({
           to_number: phoneNumber,
-          agent_id: agentId,
+          agent_id: selectedAgentId,
         });
       } else {
         return createWebCall({
-          agent_id: agentId,
+          agent_id: selectedAgentId,
         });
       }
     },
@@ -37,7 +50,7 @@ export default function Calls() {
         description: "Your call has been initiated",
       });
       setPhoneNumber('');
-      setAgentId('');
+      setSelectedAgentId('');
     },
     onError: (error) => {
       toast({
@@ -58,6 +71,7 @@ export default function Calls() {
         <div className="flex gap-4">
           <Button
             onClick={() => createCallMutation.mutate('web')}
+            disabled={!selectedAgentId}
             className="bg-blue-500 hover:bg-blue-600"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -74,14 +88,43 @@ export default function Calls() {
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
           />
-          <Input
-            placeholder="Enter agent ID"
-            value={agentId}
-            onChange={(e) => setAgentId(e.target.value)}
-          />
+          <Select
+            value={selectedAgentId}
+            onValueChange={setSelectedAgentId}
+          >
+            <SelectTrigger className="w-[240px]">
+              <SelectValue placeholder="Select an agent" />
+            </SelectTrigger>
+            <SelectContent>
+              {isLoadingAgents ? (
+                <SelectItem value="loading" disabled>
+                  Loading agents...
+                </SelectItem>
+              ) : (
+                agents?.map((agent: any) => (
+                  <SelectItem key={agent.agent_id} value={agent.agent_id}>
+                    <div className="flex items-center gap-2">
+                      <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                        {agent.agent_name ? (
+                          <img
+                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${agent.agent_name}`}
+                            alt={agent.agent_name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <User className="w-4 h-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-400" />
+                        )}
+                      </div>
+                      <span>{agent.agent_name || `Agent ${agent.agent_id.slice(0, 8)}`}</span>
+                    </div>
+                  </SelectItem>
+                ))
+              )}
+            </SelectContent>
+          </Select>
           <Button
             onClick={() => createCallMutation.mutate('phone')}
-            disabled={!phoneNumber || !agentId}
+            disabled={!phoneNumber || !selectedAgentId}
           >
             Call
           </Button>

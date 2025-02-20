@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/Layout";
+import { StrictMode } from "react";
 import Index from "./pages/Index";
 import Calls from "./pages/calls";
 import Agents from "./pages/agents";
@@ -16,23 +17,25 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
+  <StrictMode>
+    <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout><Index /></Layout>} />
-          <Route path="/calls" element={<Layout><Calls /></Layout>} />
-          <Route path="/agents" element={<Layout><Agents /></Layout>} />
-          <Route path="/voices" element={<Layout><Voices /></Layout>} />
-          <Route path="/knowledge" element={<Layout><Knowledge /></Layout>} />
-          <Route path="/settings" element={<Layout><Settings /></Layout>} />
-          <Route path="*" element={<Layout><NotFound /></Layout>} />
-        </Routes>
+        <TooltipProvider>
+          <Routes>
+            <Route path="/" element={<Layout><Index /></Layout>} />
+            <Route path="/calls" element={<Layout><Calls /></Layout>} />
+            <Route path="/agents" element={<Layout><Agents /></Layout>} />
+            <Route path="/voices" element={<Layout><Voices /></Layout>} />
+            <Route path="/knowledge" element={<Layout><Knowledge /></Layout>} />
+            <Route path="/settings" element={<Layout><Settings /></Layout>} />
+            <Route path="*" element={<Layout><NotFound /></Layout>} />
+          </Routes>
+          <Toaster />
+          <Sonner />
+        </TooltipProvider>
       </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
+    </QueryClientProvider>
+  </StrictMode>
 );
 
 export default App;

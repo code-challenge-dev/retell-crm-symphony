@@ -1,7 +1,7 @@
 
 import { 
   Home, Users, Phone, Calendar, Settings, 
-  ChevronLeft, ChevronRight 
+  ChevronLeft, ChevronRight, Mic, Brain, Database 
 } from "lucide-react";
 import {
   Sidebar,
@@ -18,9 +18,10 @@ import {
 
 const menuItems = [
   { title: "Dashboard", icon: Home, path: "/" },
-  { title: "Customers", icon: Users, path: "/customers" },
   { title: "Calls", icon: Phone, path: "/calls" },
-  { title: "Calendar", icon: Calendar, path: "/calendar" },
+  { title: "Agents", icon: Users, path: "/agents" },
+  { title: "Knowledge Base", icon: Brain, path: "/knowledge" },
+  { title: "Voices", icon: Mic, path: "/voices" },
   { title: "Settings", icon: Settings, path: "/settings" },
 ];
 

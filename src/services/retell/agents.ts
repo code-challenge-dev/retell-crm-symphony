@@ -48,3 +48,18 @@ export async function listAgents() {
   }
   return response.json();
 }
+
+export async function updateAgent(agentId: string, config: Partial<AgentConfig>) {
+  const response = await fetch(`${RETELL_API_URL}/update-agent/${agentId}`, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': `Bearer ${RETELL_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(config),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to update agent');
+  }
+  return response.json();
+}

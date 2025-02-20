@@ -34,6 +34,21 @@ export async function createPhoneCall(config: CallConfig) {
   return response.json();
 }
 
+export async function createWebCall(config: CallConfig) {
+  const response = await fetch(`${RETELL_API_URL}/v2/create-web-call`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${RETELL_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(config),
+  });
+  if (!response.ok) {
+    throw new Error('Failed to create web call');
+  }
+  return response.json();
+}
+
 export async function createBatchCall(config: BatchCallConfig) {
   const response = await fetch(`${RETELL_API_URL}/create-batch-call`, {
     method: 'POST',

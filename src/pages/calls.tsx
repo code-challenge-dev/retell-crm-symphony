@@ -19,6 +19,7 @@ import {
 export default function Calls() {
   const { toast } = useToast();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [fromNumber, setFromNumber] = useState('');
   const [selectedAgentId, setSelectedAgentId] = useState('');
 
   // Fetch calls
@@ -39,6 +40,7 @@ export default function Calls() {
       if (type === 'phone') {
         return createPhoneCall({
           to_number: phoneNumber,
+          from_number: fromNumber,
           agent_id: selectedAgentId,
         });
       } else {
@@ -53,9 +55,10 @@ export default function Calls() {
         description: "Your call has been initiated",
       });
       setPhoneNumber('');
+      setFromNumber('');
       setSelectedAgentId('');
     },
-    onError: (error) => {
+    onError: (error: any) => {
       toast({
         title: "Error creating call",
         description: error.message,
@@ -74,7 +77,7 @@ export default function Calls() {
         <div className="flex gap-4">
           <Button
             onClick={() => createCallMutation.mutate('web')}
-            disabled={!selectedAgentId}
+            disabled={!selectedAgentId || createCallMutation.isPending}
             className="bg-blue-500 hover:bg-blue-600"
           >
             <Plus className="w-4 h-4 mr-2" />
@@ -85,52 +88,74 @@ export default function Calls() {
 
       <Card className="p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">Make a Phone Call</h2>
-        <div className="flex gap-4">
-          <Input
-            placeholder="Enter phone number"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-          />
-          <Select
-            value={selectedAgentId}
-            onValueChange={setSelectedAgentId}
-          >
-            <SelectTrigger className="w-[240px]">
-              <SelectValue placeholder="Select an agent" />
-            </SelectTrigger>
-            <SelectContent>
-              {isLoadingAgents ? (
-                <SelectItem value="loading" disabled>
-                  Loading agents...
-                </SelectItem>
-              ) : (
-                agents?.map((agent: any) => (
-                  <SelectItem key={agent.agent_id} value={agent.agent_id}>
-                    <div className="flex items-center gap-2">
-                      <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-100">
-                        {agent.agent_name ? (
-                          <img
-                            src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${agent.agent_name}`}
-                            alt={agent.agent_name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <User className="w-4 h-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-400" />
-                        )}
-                      </div>
-                      <span>{agent.agent_name || `Agent ${agent.agent_id.slice(0, 8)}`}</span>
-                    </div>
+        <div className="space-y-4">
+          <div className="flex gap-4">
+            <div className="flex-1">
+              <label htmlFor="fromNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                From Number
+              </label>
+              <Input
+                id="fromNumber"
+                placeholder="Enter source number (E.164 format)"
+                value={fromNumber}
+                onChange={(e) => setFromNumber(e.target.value)}
+              />
+            </div>
+            <div className="flex-1">
+              <label htmlFor="toNumber" className="block text-sm font-medium text-gray-700 mb-1">
+                To Number
+              </label>
+              <Input
+                id="toNumber"
+                placeholder="Enter destination number (E.164 format)"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="flex gap-4">
+            <Select
+              value={selectedAgentId}
+              onValueChange={setSelectedAgentId}
+            >
+              <SelectTrigger className="w-[240px]">
+                <SelectValue placeholder="Select an agent" />
+              </SelectTrigger>
+              <SelectContent position="popper">
+                {isLoadingAgents ? (
+                  <SelectItem value="loading" disabled>
+                    Loading agents...
                   </SelectItem>
-                ))
-              )}
-            </SelectContent>
-          </Select>
-          <Button
-            onClick={() => createCallMutation.mutate('phone')}
-            disabled={!phoneNumber || !selectedAgentId}
-          >
-            Call
-          </Button>
+                ) : (
+                  agents?.map((agent: any) => (
+                    <SelectItem key={agent.agent_id} value={agent.agent_id}>
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden bg-gray-100">
+                          {agent.agent_name ? (
+                            <img
+                              src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${agent.agent_name}`}
+                              alt={agent.agent_name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <User className="w-4 h-4 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-gray-400" />
+                          )}
+                        </div>
+                        <span>{agent.agent_name || `Agent ${agent.agent_id.slice(0, 8)}`}</span>
+                      </div>
+                    </SelectItem>
+                  ))
+                )}
+              </SelectContent>
+            </Select>
+            <Button
+              onClick={() => createCallMutation.mutate('phone')}
+              disabled={!phoneNumber || !fromNumber || !selectedAgentId || createCallMutation.isPending}
+              className="flex-shrink-0"
+            >
+              Call
+            </Button>
+          </div>
         </div>
       </Card>
 

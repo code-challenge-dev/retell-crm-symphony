@@ -50,7 +50,7 @@ export async function createWebCall(config: CallConfig) {
 }
 
 export async function createBatchCall(config: BatchCallConfig) {
-  const response = await fetch(`${RETELL_API_URL}/create-batch-call`, {
+  const response = await fetch(`${RETELL_API_URL}/v2/create-batch-call`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${RETELL_API_KEY}`,

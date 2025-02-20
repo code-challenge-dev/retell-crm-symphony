@@ -10,6 +10,7 @@ import Calls from "./pages/calls";
 import Agents from "./pages/agents";
 import Voices from "./pages/voices";
 import Knowledge from "./pages/knowledge";
+import Settings from "./pages/settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/agents" element={<Layout><Agents /></Layout>} />
           <Route path="/voices" element={<Layout><Voices /></Layout>} />
           <Route path="/knowledge" element={<Layout><Knowledge /></Layout>} />
+          <Route path="/settings" element={<Layout><Settings /></Layout>} />
           <Route path="*" element={<Layout><NotFound /></Layout>} />
         </Routes>
       </BrowserRouter>

@@ -33,7 +33,7 @@ async function handleResponse(response: Response) {
 }
 
 export async function createPhoneCall(config: CallConfig) {
-  const response = await fetch(`${RETELL_API_URL}/create-phone-call`, {
+  const response = await fetch(`${RETELL_API_URL}/v2/create-phone-call`, {              //create-phone-call->v2/create-phone-call
     method: 'POST',
     ...RetellConfig,
     body: JSON.stringify(config),
@@ -42,7 +42,7 @@ export async function createPhoneCall(config: CallConfig) {
 }
 
 export async function createWebCall(config: CallConfig) {
-  const response = await fetch(`${RETELL_API_URL}/create-web-call`, {
+  const response = await fetch(`${RETELL_API_URL}/v2/create-web-call`, {                     //create-web-call->v2/create-web-call
     method: 'POST',
     ...RetellConfig,
     body: JSON.stringify(config),
@@ -51,7 +51,7 @@ export async function createWebCall(config: CallConfig) {
 }
 
 export async function createBatchCall(config: BatchCallConfig) {
-  const response = await fetch(`${RETELL_API_URL}/create-batch-call`, {
+  const response = await fetch(`${RETELL_API_URL}/create-batch-call`, {         
     method: 'POST',
     ...RetellConfig,
     body: JSON.stringify(config),

@@ -74,10 +74,11 @@ export async function listCalls(filters?: {
     });
   }
   const queryString = params.toString();
+
   const url = queryString ? `${RETELL_API_URL}/v2/list-calls?${queryString}` : `${RETELL_API_URL}/v2/list-calls`; //calls->v2/list-calls
   
   const response = await fetch(url, {
-    method: 'GET',
+    method: 'POST',
     ...RetellConfig,
   });
   return handleResponse(response);

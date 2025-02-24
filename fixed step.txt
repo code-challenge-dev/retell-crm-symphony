@@ -1,0 +1,31 @@
+1.check agents page
+error:Error loading agents: API request failed with status 404
+
+check api route.
+order: checked services/retell/agents.ts file -> check RETELL_API_URL-> check lib/retell.ts -> check this url https://api.retellai.com/v2 -> found error -> Cannot GET /v2
+
+advice>>>>>
+export const RETELL_API_URL = 'https://api.retellai.com/v2';  // Added back v2 prefix
+export const RETELL_API_KEY = 'key_bc69ed16c81fa347d618b4763cb7';
+
+this part is very danger. You must save this in your .env file.
+
+Continue>>>>
+So I checked your API docs here https://docs.retellai.com/api-references/ and found the Cause
+
+e.g::
+-your code
+export async function createAgent(config: AgentConfig) {
+  const response = await fetch(`${RETELL_API_URL}/agents`, {
+    method: 'POST',
+    ...RetellConfig,
+    body: JSON.stringify(config),
+  });
+  return handleResponse(response);
+}
+-I fixed
+const response = await fetch(`${RETELL_API_URL}/create-agent`, {  //
+
+export const RETELL_API_URL = 'https://api.retellai.com';  // removed back v2 prefix
+
+you must fixed your retellai.com calls/list-calls-> post will be changed get

@@ -42,7 +42,7 @@ export default function Agents() {
       voice_id: selectedVoiceId,
       response_engine: {
         type: 'retell-llm',
-        llm_id: 'gpt-4',
+        llm_id: 'llm_5f23834a1e91167bc63041843ec2',
       }
     }),
     onSuccess: () => {
